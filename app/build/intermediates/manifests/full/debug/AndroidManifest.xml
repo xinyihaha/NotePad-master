@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.android.notepad" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="11" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:icon="@drawable/app_notes"
+        android:label="@string/app_name" >
+        <provider
+            android:name="com.example.android.notepad.NotePadProvider"
+            android:authorities="com.google.provider.NotePad"
+            android:exported="false" >
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
+
+        <activity
+            android:name="com.example.android.notepad.NotesList"
+            android:label="@string/title_notes_list" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/vnd.google.note" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.GET_CONTENT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/vnd.google.note" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.android.notepad.NoteEditor"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="sensor"
+            android:theme="@android:style/Theme.Holo.Light" >
+            <intent-filter android:label="@string/resolve_edit" >
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="com.android.notepad.action.EDIT_NOTE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/vnd.google.note" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <action android:name="android.intent.action.PASTE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/vnd.google.note" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.android.notepad.TitleEditor"
+            android:icon="@drawable/ic_menu_edit"
+            android:label="@string/title_edit_title"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:windowSoftInputMode="stateVisible" >
+            <intent-filter android:label="@string/resolve_title" >
+                <action android:name="com.android.notepad.action.EDIT_TITLE" />
+                <!-- DEFAULT: execute if being directly invoked. -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.ALTERNATIVE" />
+                <category android:name="android.intent.category.SELECTED_ALTERNATIVE" />
+                <!-- This is the data type we operate on. -->
+                <data android:mimeType="vnd.android.cursor.item/vnd.google.note" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.android.notepad.NotesLiveFolder"
+            android:icon="@drawable/live_folder_notes"
+            android:label="@string/live_folder_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_LIVE_FOLDER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.android.notepad.SearchActivity"
+            android:icon="@drawable/icon_search"
+            android:label="@string/menuSearch" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
+
+                <data android:mimeType="vnd.android.cursor.dir/vnd.google.note" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
