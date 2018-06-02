@@ -88,7 +88,12 @@
 **搜索代码**
 
 **详情见网址：**
+
 https://github.com/xinyihaha/NotePad-master/blob/master/app/src/main/java/com/example/android/notepad/SearchActivity.java
 
 **布局文件代码：**
+
+https://github.com/xinyihaha/NotePad-master/blob/master/app/src/main/res/layout/list_search.xml
+
+https://github.com/xinyihaha/NotePad-master/blob/master/app/src/main/res/layout/noteslist_item.xml
 
