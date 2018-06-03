@@ -5,8 +5,103 @@
 
 ![](https://i.imgur.com/gexN18N.png)
 
+**时间戳所用技术与源码**
+**其中更改了PROJECTION的具体参数：增加了修改时间的变量**
+
+	 private static final String[] PROJECTION = new String[] {
+           	 NotePad.Notes._ID, // 0
+           	 NotePad.Notes.COLUMN_NAME_TITLE, // 1
+           	 NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
+           	 //NotePad.Notes.FLAG,
+  	  };
+	  
+**利用Cursor查询到数据库的具体内容然后利用SimpleAdapter显示在页面上**
+
+	  Cursor cursor = managedQuery(
+                getIntent().getData(),            // Use the default content URI for the provider.
+                PROJECTION,                       // Return the note ID and title for each note.
+                null,                             // No where clause, return all records.
+                null,                             // No where clause, therefore no where column values.
+                NotePad.Notes.DEFAULT_SORT_ORDER  // Use the default sort order.
+        );
+        // The names of the cursor columns to display in the view, initialized to the title column
+        String[] dataColumns = {  NotePad.Notes.COLUMN_NAME_TITLE , NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
+        int[] viewIDs = { android.R.id.text1,android.R.id.text2};/////////////////////////////////////
+        SimpleCursorAdapter adapter
+                = new SimpleCursorAdapter(
+                this,                             // The Context for the ListView
+                R.layout.noteslist_item,          // Points to the XML for a list item
+                cursor,                           // The cursor to get items from
+                dataColumns,
+                viewIDs
+        );
+        // Sets the ListView's adapter to be the cursor adapter that was just created.
+        setListAdapter(adapter);
+	
+**增加了TextView的个数来显示时间戳：更改了显示样式以进一步美化界面**
+
+	<LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="191dp"
+            android:layout_height="50dp"
+            android:background="@color/wheat"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/black" />
+        <!--?android:attr/listPreferredItemHeight-->
+        <TextView
+            android:id="@android:id/text2"
+            android:layout_width="306dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/sky"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
 
 ## 实验二 ##
+
+**搜索的实现新增了继承ListActivity的Search类，增加了具体的新的页面与动态搜索的功能。**
+**仍然使用PROJECTION作为数据库显示的内容：**
+
+	private static final String[] PROJECTION = new String[] {
+            NotePad.Notes._ID, // 0
+            NotePad.Notes.COLUMN_NAME_TITLE, // 1
+            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
+   	 };
+	 
+**以下为搜索的函数的使用：**
+**采用Cursor得到符合条件的数据，利用SimpleAdapter显示在页面之中。具体解释见代码注释**
+
+    public boolean onQueryTextChange(String newText) {
+        String selection = NotePad.Notes.COLUMN_NAME_TITLE + " Like ? ";//查询条件
+        String[] selectionArgs = { "%"+newText+"%" };//查询条件参数，配合selection参数使用,%通配多个字符
+        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE, NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
+        int[] viewIDs = { android.R.id.text1,android.R.id.text2};//用于显示带有时间戳的页面TextView
+        cursor = managedQuery(
+                getIntent().getData(),            // Use the default content URI for the provider.获取URI
+                PROJECTION,                       // Return the note ID and title for each note.具体显示的数据库数据
+                selection,                        // No where clause, return all records.搜索的条件
+                selectionArgs,                    // No where clause, therefore no where column values.搜索加入的条件参数
+                NotePad.Notes.DEFAULT_SORT_ORDER  // Use the default sort order.页面排列显示顺序
+        );
+        adapter = new SimpleCursorAdapter(
+                this,                             // The Context for the ListView.当前上下文
+                R.layout.noteslist_item,          // Points to the XML for a list item.显示搜索内容的布局
+                cursor,                           // The cursor to get items from.搜索出的数据库内容
+                dataColumns,			  //每行具体显示数据内容-COLUMN_NAME_TITLE与COLUMN_NAME_MODIFICATION_DATE
+                viewIDs				  //每行具体显示布局TextView
+        );
+        setListAdapter(adapter);
+        return true;
+    }
 
 **以下为主要操作的图标——编辑，搜索，保存复制的文本**
 
